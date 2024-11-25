@@ -15,7 +15,7 @@ async def all_users(db: Annotated[Session, Depends(get_db)]):
     return us
 
 @router.get('/{user_id}')
-async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: str):
+async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
     user1 = db.scalars(select(User).where(User.id == user_id))
     if user1 is None:
         raise HTTPException(
