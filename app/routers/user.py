@@ -61,6 +61,6 @@ async def delete_user(db: Annotated[Session, Depends(get_db)], user_id:int):
             detail= 'User was not found'
         )
 
-    db.execute(delete(User).where(User.id == user_id))
+    db.execute(update(User).where(User.id == user_id).values())
     db.commit()
     return {'status_code': status.HTTP_201_CREATED, 'transaction': 'Successful'}
