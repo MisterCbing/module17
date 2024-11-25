@@ -16,7 +16,7 @@ async def all_users(db: Annotated[Session, Depends(get_db)]):
 
 @router.get('/{user_id}')
 async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: str):
-    user1 = db.scalars(select(User).where(str(User.id) == user_id))
+    user1 = db.scalars(select(User).where(User.id == user_id))
     return user1
 
 @router.post('/create')
