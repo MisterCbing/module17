@@ -9,12 +9,12 @@ from slugify import slugify
 
 router = APIRouter(prefix='/user', tags=['user'])
 
-@router.get('/')
+@router.get('/all_users')
 async def all_users(db: Annotated[Session, Depends(get_db)]):
     us = db.scalars(select(User)).all()
     return us
 
-@router.get('/{user_id}')
+@router.get('/user_id')
 async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
     user1 = db.scalars(select(User).where(User.id == user_id))
     if user1 is None:
@@ -22,6 +22,7 @@ async def user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail= 'User was not found'
         )
+
     return user1
 
 @router.post('/create')
@@ -50,7 +51,7 @@ async def update_user(db: Annotated[Session, Depends(get_db)], user_id:int, upda
                                     age = update_user.age,
                                     slug = slugify(update_user.username)))
     db.commit()
-    return {'status_code': status.HTTP_201_CREATED, 'transaction': 'Successful'}
+    return {'status_code': status.HTTP_200_OK, 'transaction': 'User update is successful!'}
 
 @router.post('/delete')
 async def delete_user(db: Annotated[Session, Depends(get_db)], user_id:int):
@@ -61,6 +62,6 @@ async def delete_user(db: Annotated[Session, Depends(get_db)], user_id:int):
             detail= 'User was not found'
         )
 
-    db.execute(update(User).where(User.id == user_id).values())
+    db.execute(delete(User).where(User.id == user_id))
     db.commit()
-    return {'status_code': status.HTTP_201_CREATED, 'transaction': 'Successful'}
+    return {'status_code': status.HTTP_200_OK, 'transaction': 'User deleted successfully!'}
